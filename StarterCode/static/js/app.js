@@ -3,7 +3,7 @@ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/
 var sampleData;
 d3.json(url).then(function(data) {
     sampleData = data;
-  
+    // Making a list for the dropdown menu to select an ID
     var dropdown = document.getElementById("selDataset");
     for (var i = 0; i < sampleData.names.length; i++) {
       var option = document.createElement("option");
@@ -38,7 +38,6 @@ function optionChanged(selectedId) {
   }
   barGraph(selectedId);
   bubble(selectedId);
-  console.log(sampleData)
   gauge(selectedId);
 }
 
@@ -67,7 +66,6 @@ function barGraph(selectedId) {
     orientation: 'h'
   };
 
-  // Create the data array containing the trace
   var data = [trace1];
 
   // Create the layout for the bar graph
@@ -77,16 +75,16 @@ function barGraph(selectedId) {
     yaxis: { title: 'OTU IDs' }
   };
 
-  // Plot the bar graph using Plotly.js or your preferred charting library
+  // Plot the bar graph
   Plotly.newPlot('bar', data, layout);
 }
 
-console.log(sampleData)
 function bubble(selectedId) {
   var filteredData = sampleData.samples.filter(function(sample) {
     return sample.id === selectedId;
   });
 
+// Create a trace for the bubble chart
   var trace1 = {
     x: filteredData[0].otu_ids,
     y: filteredData[0].sample_values,
@@ -101,6 +99,7 @@ function bubble(selectedId) {
 
   var bubbleData = [trace1];
 
+// Create the layout  for the bubble chart
   var layout = {
     title: 'Bubble Chart',
     xaxis: { title: 'OTU IDs' },
@@ -117,10 +116,9 @@ function gauge(selectedId) {
     var filteredData = sampleData.metadata.filter(function(metadata) {
       return metadata.id === numericId;
     });
-  
-    console.log(filteredData); 
-  
+    // Grab the wfrew for the gauge
     var value = filteredData[0].wfreq;
+    // Create the trace for the gauge
     var gaugeTrace = {
         type: 'indicator',
         mode: 'gauge+number',
@@ -128,6 +126,7 @@ function gauge(selectedId) {
         gauge: {
           axis: { range: [0, 9] },
           bar: { color: 'rgba(123, 87, 51, 0.7)' },
+        // Making a smooth transition for a dirty belly button to clean
           steps: [
             { range: [0, 1], color: 'rgba(123, 87, 51, 0.7)' },           
             { range: [1, 2], color: 'hsl(45, 70%, 45%)' },
@@ -144,21 +143,14 @@ function gauge(selectedId) {
             thickness: 0.75,
             value: value
           },
-          shape: [
-            {
-            type: 'path',
-            path: 'M 0.5 0.5 L 0.5 0.5 L 0.5 0.5 Z',
-            fillcolor: 'green',
-            line: { color: 'green' }
-            }
-          ]
+          
         }
       };
   
       var gaugeData = [gaugeTrace];
-  
+    // Making a title for the gauge
       var gaugeLayout = {
-        title: 'Gauge Chart',
+        title: 'Belly Button Scrubs per Week',
         };
   
       Plotly.newPlot('gauge', gaugeData, gaugeLayout);
